@@ -1,6 +1,7 @@
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const Hero = () => {
@@ -50,15 +51,19 @@ const Hero = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-            <Button className="bg-primary text-white hover:bg-primary/90 h-12 px-8 text-base">
-              Find an Artist →
-            </Button>
-            <Button
-              variant="outline"
-              className="border-white/30 text-white hover:bg-white/10 h-12 px-8 text-base"
-            >
-              Join as an Artist
-            </Button>
+            <Link to="/browse-artists">
+              <Button className="bg-primary text-white hover:bg-primary/90 h-12 px-8 text-base">
+                Find an Artist →
+              </Button>
+            </Link>
+            <Link to="/browse-artists">
+              <Button
+                variant="outline"
+                className="border-white/30 text-white hover:bg-white/10 h-12 px-8 text-base"
+              >
+                Join as an Artist
+              </Button>
+            </Link>
           </div>
 
           {/* Stats */}
