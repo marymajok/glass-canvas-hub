@@ -8,6 +8,10 @@ import BrowseArtists from "./pages/BrowseArtists";
 import Categories from "./pages/Categories";
 import About from "./pages/About";
 import ContactPage from "./pages/ContactPage";
+import Auth from "./pages/Auth";
+import AdminDashboard from "./pages/AdminDashboard";
+import ArtistDashboard from "./pages/ArtistDashboard";
+import ClientDashboard from "./pages/ClientDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +28,10 @@ const App = () => (
           <Route path="/categories" element={<Categories />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/artist-dashboard" element={<ArtistDashboard />} />
+          <Route path="/client-dashboard" element={<ClientDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
