@@ -56,17 +56,19 @@ const Navbar = ({ onLoginClick, onSignupClick }: NavbarProps) => {
           </div>
 
           {/* Desktop Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-3">
             <Button
-              variant="outline"
-              className="border-white/30 text-white hover:bg-white/10"
-              onClick={onLoginClick}
+              variant="ghost"
+              size="sm"
+              className="text-white hover:bg-white/10"
+              onClick={() => window.location.href = "/auth?view=login"}
             >
               Log In
             </Button>
             <Button
+              size="sm"
               className="bg-primary text-white hover:bg-primary/90"
-              onClick={onSignupClick}
+              onClick={() => window.location.href = "/auth?view=signup"}
             >
               Sign Up
             </Button>
@@ -107,15 +109,23 @@ const Navbar = ({ onLoginClick, onSignupClick }: NavbarProps) => {
             })}
             <div className="flex flex-col space-y-2 pt-4 border-t border-white/20">
               <Button
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 w-full"
-                onClick={onLoginClick}
+                variant="ghost"
+                size="sm"
+                className="text-white hover:bg-white/10 w-full justify-start"
+                onClick={() => {
+                  setIsOpen(false);
+                  window.location.href = "/auth?view=login";
+                }}
               >
                 Log In
               </Button>
               <Button
-                className="bg-primary text-white hover:bg-primary/90 w-full"
-                onClick={onSignupClick}
+                size="sm"
+                className="bg-primary text-white hover:bg-primary/90 w-full justify-start"
+                onClick={() => {
+                  setIsOpen(false);
+                  window.location.href = "/auth?view=signup";
+                }}
               >
                 Sign Up
               </Button>

@@ -137,7 +137,24 @@ const BrowseArtists = () => {
     <div className="min-h-screen bg-background">
       <Navbar onLoginClick={handleLoginClick} onSignupClick={handleSignupClick} />
       
-      <div className="pt-24 pb-16">
+      {/* Hero Section with Background */}
+      <div 
+        className="relative pt-32 pb-16 bg-cover bg-center"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=1200)',
+        }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            Discover <span className="gradient-text">Talented Artists</span>
+          </h1>
+          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
+            Browse through Kenya's finest creative professionals and find the perfect match for your project
+          </p>
+        </div>
+      </div>
+
+      <div className="py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar Filters */}

@@ -88,17 +88,25 @@ const Categories = () => {
     <div className="min-h-screen bg-background">
       <Navbar onLoginClick={handleLoginClick} onSignupClick={handleSignupClick} />
       
-      <div className="pt-24 pb-16">
+      {/* Hero Section */}
+      <div 
+        className="relative pt-32 pb-16 bg-cover bg-center"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1200)',
+        }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            Explore <span className="gradient-text">Creative Categories</span>
+          </h1>
+          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
+            Browse through our diverse range of creative services and find the perfect artist for your project
+          </p>
+        </div>
+      </div>
+
+      <div className="py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Explore <span className="gradient-text">Creative Categories</span>
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Browse through our diverse range of creative services and find the perfect artist for your project
-            </p>
-          </div>
 
           {/* Categories Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">

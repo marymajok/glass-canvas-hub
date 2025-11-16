@@ -56,17 +56,25 @@ const ContactPage = () => {
     <div className="min-h-screen bg-background">
       <Navbar onLoginClick={handleLoginClick} onSignupClick={handleSignupClick} />
       
-      <div className="pt-24 pb-16">
+      {/* Hero Section */}
+      <div 
+        className="relative pt-32 pb-16 bg-cover bg-center"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1200)',
+        }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            Drop Us a <span className="gradient-text">Message</span>
+          </h1>
+          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
+            Fill out the form below and our team will get back to you within 24 hours.
+          </p>
+        </div>
+      </div>
+
+      <div className="py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Drop Us a <span className="gradient-text">Message</span>
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Fill out the form below and our team will get back to you within 24 hours.
-            </p>
-          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
             {/* Contact Form */}
