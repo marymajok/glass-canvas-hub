@@ -4,15 +4,16 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
-import BrowseArtists from "./pages/BrowseArtists";
-import Categories from "./pages/Categories";
 import About from "./pages/About";
+import BrowseArtists from "./pages/BrowseArtists";
+import ArtistProfile from "./pages/ArtistProfile";
+import Categories from "./pages/Categories";
 import ContactPage from "./pages/ContactPage";
+import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
 import ArtistDashboard from "./pages/ArtistDashboard";
 import ClientDashboard from "./pages/ClientDashboard";
-import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -24,9 +25,10 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/browse-artists" element={<BrowseArtists />} />
-          <Route path="/categories" element={<Categories />} />
           <Route path="/about" element={<About />} />
+          <Route path="/browse-artists" element={<BrowseArtists />} />
+          <Route path="/artist/:artistId" element={<ArtistProfile />} />
+          <Route path="/categories" element={<Categories />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/admin" element={<AdminDashboard />} />

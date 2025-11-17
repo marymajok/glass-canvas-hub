@@ -9,7 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Briefcase, Calendar, Star, DollarSign, LogOut, Edit, Upload } from "lucide-react";
+import { Briefcase, Calendar, Star, DollarSign, LogOut, Edit, Upload, Images } from "lucide-react";
+import PortfolioUpload from "@/components/PortfolioUpload";
+import NotificationBell from "@/components/NotificationBell";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -35,6 +37,7 @@ const ArtistDashboard = () => {
   });
   const [bookings, setBookings] = useState<any[]>([]);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
   const [editForm, setEditForm] = useState({
     bio: "",
     hourly_rate: "",
@@ -203,6 +206,7 @@ const ArtistDashboard = () => {
             <h1 className="text-2xl font-bold text-foreground">Artist Dashboard</h1>
           </div>
           <div className="flex gap-2">
+            <NotificationBell />
             <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline">
@@ -260,6 +264,29 @@ const ArtistDashboard = () => {
                     Save Changes
                   </Button>
                 </div>
+              </DialogContent>
+            </Dialog>
+            <Dialog open={isPortfolioOpen} onOpenChange={setIsPortfolioOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline">
+                  <Images className="mr-2 h-4 w-4" />
+                  Portfolio
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="glass-card max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>Manage Portfolio</DialogTitle>
+                  <DialogDescription>
+                    Upload images to showcase your work
+                  </DialogDescription>
+                </DialogHeader>
+                <PortfolioUpload
+                  artistId={profile?.id}
+                  onUploadComplete={() => {
+                    setIsPortfolioOpen(false);
+                    fetchDashboardData();
+                  }}
+                />
               </DialogContent>
             </Dialog>
             <Button variant="outline" onClick={handleLogout}>
