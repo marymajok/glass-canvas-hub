@@ -4,22 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import AuthModal from "@/components/AuthModal";
 
 const Categories = () => {
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authModalTab, setAuthModalTab] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
-
-  const handleLoginClick = () => {
-    setAuthModalTab("login");
-    setIsAuthModalOpen(true);
-  };
-
-  const handleSignupClick = () => {
-    setAuthModalTab("signup");
-    setIsAuthModalOpen(true);
-  };
 
   const categories = [
     {
@@ -86,7 +73,7 @@ const Categories = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar onLoginClick={handleLoginClick} onSignupClick={handleSignupClick} />
+      <Navbar />
       
       {/* Hero Section */}
       <div 
@@ -201,11 +188,6 @@ const Categories = () => {
       </div>
 
       <Footer />
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        defaultTab={authModalTab}
-      />
     </div>
   );
 };

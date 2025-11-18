@@ -12,22 +12,9 @@ import {
 } from "@/components/ui/select";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import AuthModal from "@/components/AuthModal";
 
 const ContactPage = () => {
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authModalTab, setAuthModalTab] = useState<"login" | "signup">("login");
   const [expandedFaq, setExpandedFaq] = useState<number | null>(0);
-
-  const handleLoginClick = () => {
-    setAuthModalTab("login");
-    setIsAuthModalOpen(true);
-  };
-
-  const handleSignupClick = () => {
-    setAuthModalTab("signup");
-    setIsAuthModalOpen(true);
-  };
 
   const faqs = [
     {
@@ -54,7 +41,7 @@ const ContactPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar onLoginClick={handleLoginClick} onSignupClick={handleSignupClick} />
+      <Navbar />
       
       {/* Hero Section */}
       <div 
@@ -258,11 +245,6 @@ const ContactPage = () => {
       </div>
 
       <Footer />
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        defaultTab={authModalTab}
-      />
     </div>
   );
 };

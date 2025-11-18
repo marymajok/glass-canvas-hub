@@ -16,7 +16,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const [role, setRole] = useState<"client" | "artist">("client");
+  const [role, setRole] = useState<"client" | "artist" | "admin">("client");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -88,59 +88,65 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const redirectUrl = `${window.location.origin}/`;
+      
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: {
-            full_name: fullName,
-            role: role,
-          },
-          emailRedirectTo: `${window.location.origin}/auth`,
-        },
+          data: { full_name: fullName },
+          emailRedirectTo: redirectUrl
+        }
       });
+      
+      if (authError) throw authError;
+      
+      const userId = authData.user?.id;
+      if (!userId) throw new Error("No user ID returned");
 
-      if (error) throw error;
+      // Insert into profiles
+      const { error: profileError } = await supabase.from("profiles").insert([{ 
+        id: userId, 
+        email, 
+        full_name: fullName 
+      }]);
+      if (profileError) throw profileError;
 
-      if (data.user) {
-        // Insert user role
-        const { error: roleError } = await supabase
-          .from("user_roles")
-          .insert({
-            user_id: data.user.id,
-            role: role,
-          });
+      // Insert into user_roles
+      const { error: roleError } = await supabase.from("user_roles").insert([{ 
+        user_id: userId, 
+        role 
+      }]);
+      if (roleError) throw roleError;
 
-        if (roleError) throw roleError;
-
-        // If artist, create artist profile
-        if (role === "artist") {
-          const { error: profileError } = await supabase
-            .from("artist_profiles")
-            .insert({
-              user_id: data.user.id,
-            });
-
-          if (profileError) throw profileError;
-        }
-
-        toast({
-          title: "Account created!",
-          description: "Welcome to Arts! Redirecting to your dashboard...",
-        });
-
-        // Redirect based on role
-        if (role === "artist") {
-          navigate("/artist-dashboard");
-        } else {
-          navigate("/client-dashboard");
-        }
+      // If artist, create artist profile
+      if (role === "artist") {
+        const { error: artistError } = await supabase.from("artist_profiles").insert([{ 
+          user_id: userId,
+          bio: "New artist - profile under construction",
+          hourly_rate: 1000,
+          specialties: [],
+          availability: "Available for bookings"
+        }]);
+        if (artistError) throw artistError;
       }
+
+      toast({ 
+        title: "Success!", 
+        description: "Account created successfully. Redirecting..." 
+      });
+      
+      // Redirect based on role
+      setTimeout(() => {
+        if (role === "admin") navigate("/admin");
+        else if (role === "artist") navigate("/artist-dashboard");
+        else navigate("/client-dashboard");
+      }, 1000);
     } catch (error: any) {
-      toast({
-        title: "Signup failed",
-        description: error.message,
-        variant: "destructive",
+      toast({ 
+        title: "Error", 
+        description: error.message || "Failed to create account", 
+        variant: "destructive" 
       });
     } finally {
       setLoading(false);
