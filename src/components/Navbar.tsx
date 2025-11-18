@@ -1,11 +1,48 @@
-import { useState } from "react";
-import { Menu, X, Star } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, X, Star, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    // Check auth status and role
+    const checkAuthAndRole = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session?.user) {
+        setIsAuthenticated(true);
+        
+        // Check if user is admin
+        const { data: roleData } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", session.user.id)
+          .maybeSingle();
+        
+        if (roleData?.role === "admin") {
+          setIsAdmin(true);
+        }
+      } else {
+        setIsAuthenticated(false);
+        setIsAdmin(false);
+      }
+    };
+
+    checkAuthAndRole();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      checkAuthAndRole();
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -52,21 +89,37 @@ const Navbar = () => {
 
           {/* Desktop Buttons */}
           <div className="hidden md:flex items-center space-x-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-white hover:bg-white/10"
-              onClick={() => window.location.href = "/auth?view=login"}
-            >
-              Log In
-            </Button>
-            <Button
-              size="sm"
-              className="bg-primary text-white hover:bg-primary/90"
-              onClick={() => window.location.href = "/auth?view=signup"}
-            >
-              Sign Up
-            </Button>
+            {isAdmin && (
+              <Link to="/admin">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-white border-white/30 hover:bg-white/10 hover:border-white/50"
+                >
+                  <Shield className="h-4 w-4 mr-2" />
+                  Admin Panel
+                </Button>
+              </Link>
+            )}
+            {!isAuthenticated && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-white hover:bg-white/10"
+                  onClick={() => window.location.href = "/auth?view=login"}
+                >
+                  Log In
+                </Button>
+                <Button
+                  size="sm"
+                  className="bg-primary text-white hover:bg-primary/90"
+                  onClick={() => window.location.href = "/auth?view=signup"}
+                >
+                  Sign Up
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -103,27 +156,46 @@ const Navbar = () => {
               );
             })}
             <div className="flex flex-col space-y-2 pt-4 border-t border-white/20">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-white hover:bg-white/10 w-full justify-start"
-                onClick={() => {
-                  setIsOpen(false);
-                  window.location.href = "/auth?view=login";
-                }}
-              >
-                Log In
-              </Button>
-              <Button
-                size="sm"
-                className="bg-primary text-white hover:bg-primary/90 w-full justify-start"
-                onClick={() => {
-                  setIsOpen(false);
-                  window.location.href = "/auth?view=signup";
-                }}
-              >
-                Sign Up
-              </Button>
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-white border-white/30 hover:bg-white/10 w-full justify-start"
+                  >
+                    <Shield className="h-4 w-4 mr-2" />
+                    Admin Panel
+                  </Button>
+                </Link>
+              )}
+              {!isAuthenticated && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-white hover:bg-white/10 w-full justify-start"
+                    onClick={() => {
+                      setIsOpen(false);
+                      window.location.href = "/auth?view=login";
+                    }}
+                  >
+                    Log In
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="bg-primary text-white hover:bg-primary/90 w-full justify-start"
+                    onClick={() => {
+                      setIsOpen(false);
+                      window.location.href = "/auth?view=signup";
+                    }}
+                  >
+                    Sign Up
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
