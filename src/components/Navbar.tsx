@@ -3,12 +3,7 @@ import { Menu, X, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 
-interface NavbarProps {
-  onLoginClick: () => void;
-  onSignupClick: () => void;
-}
-
-const Navbar = ({ onLoginClick, onSignupClick }: NavbarProps) => {
+const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 

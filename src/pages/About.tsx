@@ -1,25 +1,11 @@
-import { useState } from "react";
 import { Heart, Shield, Award, Users } from "lucide-react";
+import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MissionVision from "@/components/MissionVision";
 import Team from "@/components/Team";
-import AuthModal from "@/components/AuthModal";
 
 const About = () => {
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authModalTab, setAuthModalTab] = useState<"login" | "signup">("login");
-
-  const handleLoginClick = () => {
-    setAuthModalTab("login");
-    setIsAuthModalOpen(true);
-  };
-
-  const handleSignupClick = () => {
-    setAuthModalTab("signup");
-    setIsAuthModalOpen(true);
-  };
-
   const values = [
     {
       icon: Heart,
@@ -45,7 +31,7 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar onLoginClick={handleLoginClick} onSignupClick={handleSignupClick} />
+      <Navbar />
       
       {/* Hero Section with Background */}
       <div 
@@ -139,29 +125,24 @@ const About = () => {
               Join thousands of artists and clients who trust Arts for their creative needs
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
-                onClick={handleSignupClick}
-                className="px-8 py-4 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg font-semibold transition-colors"
+              <Link 
+                to="/auth?view=signup"
+                className="px-8 py-4 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg font-semibold transition-colors text-center"
               >
                 Join as an Artist
-              </button>
-              <button 
-                onClick={handleSignupClick}
-                className="px-8 py-4 bg-background border border-border text-foreground hover:bg-muted rounded-lg font-semibold transition-colors"
+              </Link>
+              <Link 
+                to="/auth?view=signup"
+                className="px-8 py-4 bg-background border border-border text-foreground hover:bg-muted rounded-lg font-semibold transition-colors text-center"
               >
                 Find an Artist
-              </button>
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       <Footer />
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        defaultTab={authModalTab}
-      />
     </div>
   );
 };
