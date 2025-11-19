@@ -25,16 +25,55 @@ const BrowseArtists = () => {
   const fetchArtists = async () => {
     setLoading(true);
     try {
-      let query = supabase.from("artist_profiles").select("*, profiles!inner(full_name, avatar_url, location)").order("rating", { ascending: false });
-      if (searchQuery) query = query.ilike("profiles.full_name", `%${searchQuery}%`);
+      // Fetch artist profiles with user info
+      let query = supabase
+        .from("artist_profiles")
+        .select("*")
+        .order("rating", { ascending: false });
+      
       if (specialty) query = query.contains("specialties", [specialty]);
       if (priceRange === "low") query = query.lte("hourly_rate", 3000);
       else if (priceRange === "medium") query = query.gte("hourly_rate", 3000).lte("hourly_rate", 7000);
       else if (priceRange === "high") query = query.gte("hourly_rate", 7000);
-      const { data } = await query;
-      setArtists(data || []);
+      
+      const { data: artistProfiles, error: artistError } = await query;
+      
+      if (artistError) throw artistError;
+      if (!artistProfiles || artistProfiles.length === 0) {
+        setArtists([]);
+        setLoading(false);
+        return;
+      }
+
+      // Fetch corresponding profiles
+      const userIds = artistProfiles.map(a => a.user_id);
+      const { data: profiles, error: profileError } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url, location")
+        .in("id", userIds);
+
+      if (profileError) throw profileError;
+
+      // Merge data
+      const artistsWithProfiles = artistProfiles.map(artist => {
+        const profile = profiles?.find(p => p.id === artist.user_id);
+        return {
+          ...artist,
+          profiles: profile || { full_name: "Unknown", avatar_url: null, location: null }
+        };
+      });
+
+      // Apply search filter on merged data
+      const filtered = searchQuery
+        ? artistsWithProfiles.filter(a => 
+            a.profiles.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+        : artistsWithProfiles;
+
+      setArtists(filtered);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching artists:", error);
+      setArtists([]);
     } finally {
       setLoading(false);
     }
