@@ -56,7 +56,7 @@ const Hero = () => {
                 Find an Artist →
               </Button>
             </Link>
-            <Link to="/browse-artists">
+            <Link to="/auth?view=signup">
               <Button
                 variant="outline"
                 className="border-white/30 text-white hover:bg-white/10 h-12 px-8 text-base"

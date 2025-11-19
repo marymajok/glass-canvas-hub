@@ -72,8 +72,24 @@ const BrowseArtists = () => {
             </Select>
           </div>
         </div>
-        {loading ? <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" /></div> : 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+          </div>
+        ) : artists.length === 0 ? (
+          <div className="text-center py-16 glass-card">
+            <p className="text-xl text-muted-foreground mb-4">No artists found</p>
+            <p className="text-muted-foreground mb-6">
+              {searchQuery || specialty || priceRange 
+                ? "Try adjusting your filters" 
+                : "Be the first to join as an artist!"}
+            </p>
+            <Button onClick={() => navigate("/auth?view=signup")}>
+              Join as Artist
+            </Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {artists.map((artist) => (
             <Card key={artist.id} className="glass-card hover:scale-105 transition-transform cursor-pointer" onClick={() => navigate(`/artist/${artist.id}`)}>
               <CardHeader>
@@ -96,7 +112,8 @@ const BrowseArtists = () => {
               </CardContent>
             </Card>
           ))}
-        </div>}
+        </div>
+        )}
       </div>
       <Footer />
     </div>
