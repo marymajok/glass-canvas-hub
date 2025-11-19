@@ -37,11 +37,16 @@ const ArtistProfile = () => {
       // Fetch artist profile
       const { data: artistData, error: artistError } = await supabase
         .from("artist_profiles")
-        .select("*, profiles!inner(*)")
+        .select("*")
         .eq("id", artistId)
-        .single();
+        .maybeSingle();
 
       if (artistError) throw artistError;
+      if (!artistData) {
+        setLoading(false);
+        return;
+      }
+      
       setArtist(artistData);
 
       // Fetch user profile
@@ -49,7 +54,7 @@ const ArtistProfile = () => {
         .from("profiles")
         .select("*")
         .eq("id", artistData.user_id)
-        .single();
+        .maybeSingle();
       
       setProfile(profileData);
 
