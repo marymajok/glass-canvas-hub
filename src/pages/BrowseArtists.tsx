@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,11 +12,20 @@ import Footer from "@/components/Footer";
 
 const BrowseArtists = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [specialty, setSpecialty] = useState("");
   const [priceRange, setPriceRange] = useState("");
   const [artists, setArtists] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Set specialty from URL params
+  useEffect(() => {
+    const specialtyParam = searchParams.get("specialty");
+    if (specialtyParam) {
+      setSpecialty(specialtyParam);
+    }
+  }, [searchParams]);
   
   useEffect(() => {
     fetchArtists();
@@ -31,10 +40,11 @@ const BrowseArtists = () => {
         .select("*")
         .order("rating", { ascending: false });
       
-      if (specialty) query = query.contains("specialties", [specialty]);
+      if (specialty && specialty !== "all") query = query.contains("specialties", [specialty]);
       if (priceRange === "low") query = query.lte("hourly_rate", 3000);
       else if (priceRange === "medium") query = query.gte("hourly_rate", 3000).lte("hourly_rate", 7000);
       else if (priceRange === "high") query = query.gte("hourly_rate", 7000);
+      // "all" or empty means no filter
       
       const { data: artistProfiles, error: artistError } = await query;
       
@@ -95,15 +105,22 @@ const BrowseArtists = () => {
             <Select value={specialty} onValueChange={setSpecialty}>
               <SelectTrigger className="glass-input"><SelectValue placeholder="Specialty" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All</SelectItem>
+                <SelectItem value="all">All Specialties</SelectItem>
                 <SelectItem value="Photography">Photography</SelectItem>
                 <SelectItem value="Music">Music</SelectItem>
+                <SelectItem value="Dance">Dance</SelectItem>
+                <SelectItem value="Design">Design</SelectItem>
+                <SelectItem value="Makeup">Makeup</SelectItem>
+                <SelectItem value="Event Planning">Event Planning</SelectItem>
+                <SelectItem value="Entertainment">Entertainment</SelectItem>
+                <SelectItem value="Catering">Catering</SelectItem>
+                <SelectItem value="Content Creation">Content Creation</SelectItem>
               </SelectContent>
             </Select>
             <Select value={priceRange} onValueChange={setPriceRange}>
               <SelectTrigger className="glass-input"><SelectValue placeholder="Price" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All</SelectItem>
+                <SelectItem value="all">All</SelectItem>
                 <SelectItem value="low">Under 3000</SelectItem>
                 <SelectItem value="medium">3000-7000</SelectItem>
                 <SelectItem value="high">7000+</SelectItem>

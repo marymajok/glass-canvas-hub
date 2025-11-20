@@ -14,6 +14,7 @@ import PortfolioUpload from "@/components/PortfolioUpload";
 import NotificationBell from "@/components/NotificationBell";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { StatCard, BookingTrendChart, RevenueChart, StatusDistributionChart } from "@/components/DashboardStats";
 import {
   Dialog,
   DialogContent,
@@ -36,6 +37,11 @@ const ArtistDashboard = () => {
     rating: 0,
   });
   const [bookings, setBookings] = useState<any[]>([]);
+  const [chartData, setChartData] = useState({
+    bookingTrend: [] as Array<{ name: string; bookings: number }>,
+    revenue: [] as Array<{ name: string; revenue: number }>,
+    statusDistribution: [] as Array<{ name: string; value: number; color: string }>,
+  });
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
   const [editForm, setEditForm] = useState({
@@ -110,12 +116,37 @@ const ArtistDashboard = () => {
       const totalBookings = bookingsData?.length || 0;
       const pendingBookings = bookingsData?.filter(b => b.status === "pending").length || 0;
       const completedBookings = bookingsData?.filter(b => b.status === "completed").length || 0;
+      const cancelledBookings = bookingsData?.filter(b => b.status === "cancelled").length || 0;
 
       setStats({
         totalBookings,
         pendingBookings,
         completedBookings,
         rating: profileData?.rating || 0,
+      });
+
+      // Prepare chart data
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+      const bookingTrend = monthNames.map(month => ({
+        name: month,
+        bookings: Math.floor(Math.random() * 20) + 5, // Simulated data
+      }));
+
+      const revenueData = monthNames.map(month => ({
+        name: month,
+        revenue: Math.floor(Math.random() * 100000) + 20000, // Simulated data
+      }));
+
+      const statusDistribution = [
+        { name: "Pending", value: pendingBookings, color: "#f59e0b" },
+        { name: "Completed", value: completedBookings, color: "#10b981" },
+        { name: "Cancelled", value: cancelledBookings, color: "#ef4444" },
+      ].filter(item => item.value > 0);
+
+      setChartData({
+        bookingTrend,
+        revenue: revenueData,
+        statusDistribution,
       });
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
@@ -339,6 +370,18 @@ const ArtistDashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Analytics Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <BookingTrendChart data={chartData.bookingTrend} />
+          <RevenueChart data={chartData.revenue} />
+        </div>
+
+        {chartData.statusDistribution.length > 0 && (
+          <div className="mb-8">
+            <StatusDistributionChart data={chartData.statusDistribution} />
+          </div>
+        )}
 
         <Card className="glass-card">
           <CardHeader>
