@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, Camera, Palette, Music, Layout, Sparkles, Users, Mic, UtensilsCrossed, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const Categories = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
 
   const categories = [
@@ -14,54 +16,63 @@ const Categories = () => {
       count: 245,
       icon: Camera,
       image: "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=400",
+      specialty: "Photography",
     },
     {
       name: "Makeup Artists",
       count: 189,
       icon: Sparkles,
       image: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400",
+      specialty: "Makeup",
     },
     {
       name: "Musicians",
       count: 156,
       icon: Music,
       image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400",
+      specialty: "Music",
     },
     {
       name: "Graphic Designers",
       count: 176,
       icon: Layout,
       image: "https://images.unsplash.com/photo-1626785774625-ddcddc3445e9?w=400",
+      specialty: "Design",
     },
     {
       name: "Event Decorators",
       count: 91,
       icon: Palette,
       image: "https://images.unsplash.com/photo-1519167758481-83f29da8fd12?w=400",
+      specialty: "Event Planning",
     },
     {
       name: "Dancers & Choreographers",
       count: 68,
       icon: Users,
       image: "https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=400",
+      specialty: "Dance",
     },
     {
       name: "MCs & Comedians",
       count: 54,
       icon: Mic,
       image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400",
+      specialty: "Entertainment",
     },
     {
       name: "Caterers",
       count: 103,
       icon: UtensilsCrossed,
       image: "https://images.unsplash.com/photo-1555244162-803834f70033?w=400",
+      specialty: "Catering",
     },
     {
       name: "Content Creators",
       count: 132,
       icon: Video,
       image: "https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=400",
+      specialty: "Content Creation",
     },
   ];
 
@@ -104,6 +115,7 @@ const Categories = () => {
                   key={category.name}
                   className="glass-card overflow-hidden group cursor-pointer"
                   style={{ animationDelay: `${index * 0.1}s` }}
+                  onClick={() => navigate(`/browse-artists?specialty=${category.specialty}`)}
                 >
                   <div className="relative h-48 overflow-hidden">
                     <img
@@ -128,6 +140,10 @@ const Categories = () => {
                     <Button 
                       variant="ghost" 
                       className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/browse-artists?specialty=${category.specialty}`);
+                      }}
                     >
                       Browse Artists <ArrowRight size={16} className="ml-2" />
                     </Button>

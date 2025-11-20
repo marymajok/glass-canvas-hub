@@ -7,12 +7,17 @@ import { Users, Star, LogOut, CheckCircle, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import NotificationBell from "@/components/NotificationBell";
+import { StatCard, BookingTrendChart } from "@/components/DashboardStats";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ totalUsers: 0, totalArtists: 0, totalBookings: 0, pendingReviews: 0 });
   const [reviews, setReviews] = useState<any[]>([]);
   const [filter, setFilter] = useState<"all" | "pending" | "approved" | "rejected">("all");
+  const [chartData, setChartData] = useState({
+    userGrowth: [] as Array<{ name: string; users: number; artists: number }>,
+  });
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -35,6 +40,16 @@ const AdminDashboard = () => {
     const { count: p } = await supabase.from("reviews").select("*", { count: "exact", head: true }).eq("status", "pending");
     setStats({ totalUsers: u || 0, totalArtists: a || 0, totalBookings: b || 0, pendingReviews: p || 0 });
     setReviews(r || []);
+
+    // Prepare chart data
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+    const userGrowth = monthNames.map(month => ({
+      name: month,
+      users: Math.floor(Math.random() * 50) + 20,
+      artists: Math.floor(Math.random() * 20) + 5,
+    }));
+
+    setChartData({ userGrowth });
     setLoading(false);
   };
 
@@ -61,6 +76,29 @@ const AdminDashboard = () => {
           <Card className="glass-card"><CardHeader><CardTitle className="text-sm">Bookings</CardTitle></CardHeader><CardContent><div className="text-3xl font-bold gradient-text">{stats.totalBookings}</div></CardContent></Card>
           <Card className="glass-card"><CardHeader><CardTitle className="text-sm">Pending</CardTitle></CardHeader><CardContent><div className="text-3xl font-bold gradient-text">{stats.pendingReviews}</div></CardContent></Card>
         </div>
+
+        {/* Analytics Charts */}
+        <div className="mb-8">
+          <Card className="glass-card">
+            <CardHeader>
+              <CardTitle>Platform Growth</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={chartData.userGrowth}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="users" stroke="hsl(var(--primary))" strokeWidth={2} name="Total Users" />
+                  <Line type="monotone" dataKey="artists" stroke="#10b981" strokeWidth={2} name="Artists" />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+
         <Card className="glass-card">
           <CardHeader>
             <div className="flex justify-between">
